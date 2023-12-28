@@ -1,0 +1,227 @@
+:root {
+    --blue: #448aff;
+    --hover: #f3f5f9;
+    --blueHover: #3d7ce5;
+    --border: #e0e3eb;
+    --text: #323e54;
+    --bg: #fff;
+    --disabledBg: #f0f3fa;
+    --fs12: 12px;
+    --btnSize: 30px;
+}
+
+.loading-spinner {
+    border: .5rem solid var(--border);
+    border-top: .5rem solid var(--blue);
+    border-radius: 50%;
+    width: .9375rem;
+    height: .9375rem;
+    animation: spin 1s linear infinite;
+    margin: .3125rem auto;
+    display: none;
+
+    &.visible {
+        display: block;
+    }
+
+    &.hidden {
+        display: none;
+    }
+}
+
+.spinner-loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 25rem;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#custom-table {
+    .react-light-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+
+        &.clickable {
+            tbody {
+                tr {
+                    cursor: pointer;
+                }
+            }
+        }
+
+        &.sortable-table {
+            thead {
+                th {
+                    &:hover {
+                        cursor: pointer;
+                    }
+
+                    .sortable-header {
+                        position: relative;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: .3125rem;
+                        padding-left: .9375rem;
+
+                        &::after {
+                            display: block;
+                            content: "";
+                            width: 0.625rem;
+                            height: 0.625rem;
+                            z-index: 9;
+                            visibility: hidden;
+                        }
+                    }
+
+
+                    &.asc {
+                        .sortable-header {
+                            &::after {
+                                background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCAxMCAxMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPG1hc2sgaWQ9InBhdGgtMS1pbnNpZGUtMV81MjlfNjQiIGZpbGw9IndoaXRlIj4KPHBhdGggZD0iTTAgNC45NDk3MUw0Ljk0OTc1IDkuODk5NDVMOS44OTk1IDQuOTQ5NzFMNC45NDk3NSAtMy45OTM1MWUtMDVMMCA0Ljk0OTcxWiIvPgo8L21hc2s+CjxwYXRoIGQ9Ik00Ljk0OTc1IC0zLjk5MzUxZS0wNUwzLjUzNTUzIC0xLjQxNDI1TDQuOTQ5NzUgLTIuODI4NDdMNi4zNjM5NiAtMS40MTQyNUw0Ljk0OTc1IC0zLjk5MzUxZS0wNVpNOC40ODUyOCA2LjM2MzkyTDMuNTM1NTMgMS40MTQxN0w2LjM2Mzk2IC0xLjQxNDI1TDExLjMxMzcgMy41MzU0OUw4LjQ4NTI4IDYuMzYzOTJaTTYuMzYzOTYgMS40MTQxN0wxLjQxNDIxIDYuMzYzOTJMLTEuNDE0MjEgMy41MzU0OUwzLjUzNTUzIC0xLjQxNDI1TDYuMzYzOTYgMS40MTQxN1oiIGZpbGw9IiM0NDhBRkYiIG1hc2s9InVybCgjcGF0aC0xLWluc2lkZS0xXzUyOV82NCkiLz4KPC9zdmc+Cg==);
+                                visibility: visible;
+                            }
+                        }
+                    }
+
+                    &.desc {
+                        .sortable-header {
+                            &::after {
+                                background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCAxMCAxMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPG1hc2sgaWQ9InBhdGgtMS1pbnNpZGUtMV81MjlfNjQiIGZpbGw9IndoaXRlIj4KPHBhdGggZD0iTTAgNC45NDk3MUw0Ljk0OTc1IC0zLjk5MzUxZS0wNUw5Ljg5OTUgNC45NDk3MUw0Ljk0OTc1IDkuODk5NDVMMCA0Ljk0OTcxWiIvPgo8L21hc2s+CjxwYXRoIGQ9Ik00Ljk0OTc1IDkuODk5NDVMMy41MzU1MyAxMS4zMTM3TDQuOTQ5NzUgMTIuNzI3OUw2LjM2Mzk2IDExLjMxMzdMNC45NDk3NSA5Ljg5OTQ1Wk04LjQ4NTI4IDMuNTM1NDlMMy41MzU1MyA4LjQ4NTI0TDYuMzYzOTYgMTEuMzEzN0wxMS4zMTM3IDYuMzYzOTJMOC40ODUyOCAzLjUzNTQ5Wk02LjM2Mzk2IDguNDg1MjRMMS40MTQyMSAzLjUzNTQ5TC0xLjQxNDIxIDYuMzYzOTJMMy41MzU1MyAxMS4zMTM3TDYuMzYzOTYgOC40ODUyNFoiIGZpbGw9IiM0NDhBRkYiIG1hc2s9InVybCgjcGF0aC0xLWluc2lkZS0xXzUyOV82NCkiLz4KPC9zdmc+Cg==);
+                                visibility: visible;
+
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            z-index: 1;
+
+            th {
+                padding: .375rem 0.625rem;
+                line-height: 21px;
+                text-align: center;
+                user-select: none;
+                color: var(--text);
+                opacity: .75;
+                border-bottom: solid 1px var(--border);
+                border-top: solid 1px var(--border);
+                font-weight: normal;
+
+                &.right {
+                    text-align: right;
+                }
+
+                &.center {
+                    text-align: center;
+                }
+
+                &.left {
+                    text-align: left;
+                }
+
+
+                &.nowrap {
+                    white-space: nowrap;
+                }
+            }
+        }
+
+        tbody {
+            tr {
+                &:not(:last-child) {
+                    td {
+                        border-bottom: solid 1px var(--border);
+                    }
+                }
+
+                &:hover {
+                    background: var(--hover);
+                }
+
+                td {
+                    padding: .625rem;
+                    text-align: center;
+                    direction: ltr;
+                    height: 3rem;
+
+                    @media only screen and (max-width: 85.375rem) {
+                        padding: .5rem;
+                    }
+
+                    .ticker-view {
+                        justify-content: center;
+                    }
+
+                    &.right {
+                        text-align: right;
+                    }
+
+                    &.center {
+                        text-align: center;
+                    }
+
+                    &.left {
+                        text-align: left;
+                    }
+
+                    &.nowrap {
+                        white-space: nowrap;
+                    }
+
+                    .have-icon {
+                        display: flex;
+                        gap: .625rem;
+                        justify-content: flex-end;
+                        align-items: center;
+
+                        a {
+                            display: flex;
+                            gap: .625rem;
+                            justify-content: flex-end;
+                            align-items: center;
+                        }
+
+
+                        img,
+                        svg {
+                            vertical-align: middle;
+                            max-width: 1.5rem;
+                            border-radius: 6.25rem;
+                        }
+
+                        a {
+                            text-decoration: none;
+                            color: inherit;
+                        }
+                    }
+
+                    .chart-cell {
+                        display: flex;
+                        align-items: center;
+                        gap: 1.25rem;
+                        direction: rtl;
+                        padding: 0 1.25rem;
+                    }
+                }
+            }
+        }
+    }
+}
