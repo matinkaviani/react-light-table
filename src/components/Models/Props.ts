@@ -32,6 +32,8 @@ export interface TableProps<T> {
     initSort?: SortProps;
     numberRows?: boolean;
     rowsPerPage?: number;
+    direction?: "rtl" | "ltr";
+    icons?: { asc: ReactNode; desc: ReactNode; neutral: ReactNode }
     handleRowClick?: (item: T, e?: React.MouseEvent<HTMLTableRowElement>) => void;
     loading?: boolean;
     rowKey?: (item: T) => string;

@@ -27,20 +27,21 @@ var jsx_runtime_1 = require("react/jsx-runtime");
 var react_1 = require("react");
 var Empty_1 = __importDefault(require("./Empty"));
 var Pagination_1 = __importDefault(require("./Pagination"));
+var SortIndicators_1 = require("./SortIndicators");
 var Spinner_1 = __importDefault(require("./Spinner"));
 var TextEllipsis_1 = __importDefault(require("./TextEllipsis"));
 var helpers_1 = __importDefault(require("./helpers"));
 var ReactLightTable = function (_a) {
     var _b;
-    var id = _a.id, columns = _a.columns, data = _a.data, sortable = _a.sortable, _c = _a.headerTextAlign, headerTextAlign = _c === void 0 ? "center" : _c, contentTextAlign = _a.contentTextAlign, className = _a.className, hasPagination = _a.hasPagination, initSort = _a.initSort, numberRows = _a.numberRows, _d = _a.rowsPerPage, rowsPerPage = _d === void 0 ? 50 : _d, loading = _a.loading, handleRowClick = _a.handleRowClick, rowKey = _a.rowKey, afterSort = _a.afterSort, onCurrentDataChange = _a.onCurrentDataChange;
-    var _e = (0, react_1.useState)(initSort
+    var id = _a.id, columns = _a.columns, data = _a.data, sortable = _a.sortable, _c = _a.headerTextAlign, headerTextAlign = _c === void 0 ? "center" : _c, contentTextAlign = _a.contentTextAlign, className = _a.className, hasPagination = _a.hasPagination, initSort = _a.initSort, numberRows = _a.numberRows, _d = _a.rowsPerPage, rowsPerPage = _d === void 0 ? 50 : _d, loading = _a.loading, _e = _a.direction, direction = _e === void 0 ? "ltr" : _e, _f = _a.icons, icons = _f === void 0 ? { asc: (0, jsx_runtime_1.jsx)(SortIndicators_1.SortAsc, {}), desc: (0, jsx_runtime_1.jsx)(SortIndicators_1.SortDesc, {}), neutral: (0, jsx_runtime_1.jsx)(SortIndicators_1.Neutral, {}) } : _f, handleRowClick = _a.handleRowClick, rowKey = _a.rowKey, afterSort = _a.afterSort, onCurrentDataChange = _a.onCurrentDataChange;
+    var _g = (0, react_1.useState)(initSort
         ? {
             key: initSort.key,
             mode: initSort.mode,
             isAbsoluteValue: initSort.isAbsoluteValue,
         }
-        : null), sort = _e[0], setSort = _e[1];
-    var _f = (0, react_1.useState)(1), currentPage = _f[0], setCurrentPage = _f[1];
+        : null), sort = _g[0], setSort = _g[1];
+    var _h = (0, react_1.useState)(1), currentPage = _h[0], setCurrentPage = _h[1];
     var firstPageIndex = (currentPage - 1) * rowsPerPage;
     var lastPageIndex = firstPageIndex + rowsPerPage;
     var handlePages = function (updatedPage) { return setCurrentPage(updatedPage); };
@@ -48,6 +49,7 @@ var ReactLightTable = function (_a) {
         if (!sortable)
             return;
         var toggleSortMode = function (currentSort) {
+            console.log(currentSort);
             if (!currentSort || key !== currentSort.key) {
                 return { key: key, mode: "asc", isAbsoluteValue: isAbsoluteValue };
             }
@@ -62,13 +64,39 @@ var ReactLightTable = function (_a) {
         };
         var newSort = toggleSortMode(sort);
         afterSort === null || afterSort === void 0 ? void 0 : afterSort(key, newSort.mode);
-        setCurrentPage(1);
+        if (currentPage !== 1)
+            setCurrentPage(1);
         setSort(newSort);
     };
+    var handleThClick = (0, react_1.useCallback)(function (column) {
+        var _a, _b, _c;
+        sortable && column.sortable
+            ? requestSort((_b = (_a = column.key) === null || _a === void 0 ? void 0 : _a.toString()) !== null && _b !== void 0 ? _b : "", (_c = column.isAbsoluteValue) !== null && _c !== void 0 ? _c : false)
+            : undefined;
+    }, [sortable, requestSort]);
+    console.log("GERERE");
     var getClassNamesFor = function (name) {
+        var _a;
         if (!sort || !name)
             return "";
-        return sort.key === name ? sort.mode : "";
+        return sort.key === name ? " ".concat((_a = sort.mode) !== null && _a !== void 0 ? _a : "") : "";
+    };
+    var SortIndicator = function () {
+        if (!sortable || !sort)
+            return null;
+        var component = null;
+        switch (sort.mode) {
+            case "asc":
+                component = icons.asc;
+                break;
+            case "desc":
+                component = icons.desc;
+                break;
+            default:
+                component = icons.neutral;
+                break;
+        }
+        return (0, jsx_runtime_1.jsx)(jsx_runtime_1.Fragment, { children: component });
     };
     var manageData = data;
     if (sort && !hasPagination) {
@@ -84,37 +112,36 @@ var ReactLightTable = function (_a) {
             manageData = data;
     }
     if (hasPagination) {
-        if (sort) {
+        if (sort && sort.mode !== null) {
             var column = columns.find(function (col) { return col.key === sort.key; });
-            if (column && column.sortFunction)
+            if (column && column.sortFunction) {
                 manageData = column.sortFunction(data, sort.mode).slice(firstPageIndex, lastPageIndex);
-            else
-                manageData = data === null || data === void 0 ? void 0 : data.sort(helpers_1.default[sort.mode === "asc" ? "sortAsc" : "sortDesc"](sort.key, {
+            }
+            else {
+                manageData = __spreadArray([], data, true).sort(helpers_1.default[sort.mode === "asc" ? "sortAsc" : "sortDesc"](sort.key, {
                     putNullAtBottom: true,
                     sortByAbsValue: sort.isAbsoluteValue,
-                })).slice(firstPageIndex, lastPageIndex);
+                }))
+                    .slice(firstPageIndex, lastPageIndex);
+            }
+        }
+        else {
+            // If sort is null or sort.mode is null, use the original data without sorting
+            manageData = data.slice(firstPageIndex, lastPageIndex);
         }
     }
     (0, react_1.useEffect)(function () {
         onCurrentDataChange === null || onCurrentDataChange === void 0 ? void 0 : onCurrentDataChange(manageData);
     }, [currentPage]);
-    return ((0, jsx_runtime_1.jsxs)("div", __assign({ id: "custom-table" }, { children: [(0, jsx_runtime_1.jsxs)("table", __assign({ id: id, className: "react-light-table ".concat(sortable ? "sortable-table" : "", " ").concat(handleRowClick ? "clickable" : "", " ").concat(className !== null && className !== void 0 ? className : "") }, { children: [(0, jsx_runtime_1.jsx)("thead", { children: (0, jsx_runtime_1.jsxs)("tr", { children: [numberRows ? ((0, jsx_runtime_1.jsx)("th", __assign({ className: "".concat(headerTextAlign !== null && headerTextAlign !== void 0 ? headerTextAlign : "", " number-header-col") }, { children: "Row" }))) : null, columns.map(function (column, idx) {
-                                    var _a;
+    return ((0, jsx_runtime_1.jsxs)("div", __assign({ id: "react-light-table" }, { children: [(0, jsx_runtime_1.jsxs)("table", __assign({ id: id, className: "react-light-table-wrapper".concat(sortable ? " sortable-table" : "").concat(handleRowClick ? " clickable" : "").concat(className ? " ".concat(className) : "") }, { children: [(0, jsx_runtime_1.jsx)("thead", { children: (0, jsx_runtime_1.jsxs)("tr", { children: [numberRows ? ((0, jsx_runtime_1.jsx)("th", __assign({ className: "number-header-col".concat(headerTextAlign ? " ".concat(headerTextAlign) : "") }, { children: "Row" }))) : null, columns.map(function (column, idx) {
                                     var typeOfTitle = typeof column.title === "string"
                                         ? column.title
                                         : column.title();
-                                    return ((0, jsx_runtime_1.jsx)("th", __assign({ onClick: function () {
-                                            return sortable && column.sortable
-                                                ? requestSort(column.key, column.isAbsoluteValue)
-                                                : undefined;
-                                        }, className: "".concat(headerTextAlign, " ").concat(getClassNamesFor(column.key), " ").concat((_a = column.headClassName) !== null && _a !== void 0 ? _a : ""), title: typeOfTitle }, { children: (0, jsx_runtime_1.jsx)("span", __assign({ className: "sortable-header" }, { children: column.isHeadNowrap ? ((0, jsx_runtime_1.jsx)(TextEllipsis_1.default, { children: typeOfTitle })) : (typeOfTitle) })) }), idx));
+                                    return ((0, jsx_runtime_1.jsx)("th", __assign({ onClick: function () { return handleThClick(column); }, className: "".concat(headerTextAlign ? "".concat(headerTextAlign) : "").concat(sortable ? getClassNamesFor(column.key) : "").concat(column.headClassName ? " ".concat(column.headClassName) : ""), title: typeOfTitle }, { children: (0, jsx_runtime_1.jsxs)("span", __assign({ className: "".concat(sortable && column.sortable ? "sortable-header" : "") }, { children: [column.isHeadNowrap ? ((0, jsx_runtime_1.jsx)(TextEllipsis_1.default, { className: "".concat(headerTextAlign), dir: direction, children: typeOfTitle })) : (typeOfTitle), column.sortable && column.key === (sort === null || sort === void 0 ? void 0 : sort.key) ? ((0, jsx_runtime_1.jsx)(SortIndicator, {})) : null] })) }), idx));
                                 })] }) }), loading || !manageData || !manageData.length ? null : ((0, jsx_runtime_1.jsx)("tbody", { children: manageData.map(function (item, idx) { return ((0, jsx_runtime_1.jsxs)("tr", __assign({ onClick: function (e) {
                                 return handleRowClick ? handleRowClick(item, e) : undefined;
-                            } }, { children: [numberRows ? ((0, jsx_runtime_1.jsx)("td", __assign({ className: "".concat(contentTextAlign !== null && contentTextAlign !== void 0 ? contentTextAlign : "", " number-row") }, { children: idx + 1 + (currentPage - 1) * rowsPerPage }), "row")) : null, columns.map(function (column) {
-                                    var _a;
-                                    return ((0, jsx_runtime_1.jsx)("td", __assign({ className: "".concat((_a = column.cellClassName) !== null && _a !== void 0 ? _a : "", " ").concat(contentTextAlign !== null && contentTextAlign !== void 0 ? contentTextAlign : "") }, { children: column.render
-                                            ? column.render(column.key, item)
-                                            : item[column.key] }), column.key));
-                                })] }), rowKey ? "row-".concat(rowKey(item)) : idx)); }) }))] })), !manageData || !manageData.length ? ((0, jsx_runtime_1.jsx)("div", { children: (0, jsx_runtime_1.jsx)(Empty_1.default, {}) })) : null, (0, jsx_runtime_1.jsx)("div", __assign({ className: "spinner-loader" }, { children: (0, jsx_runtime_1.jsx)(Spinner_1.default, { loading: loading !== null && loading !== void 0 ? loading : false }) })), !loading && hasPagination ? ((0, jsx_runtime_1.jsx)(Pagination_1.default, { page: currentPage, totalPages: Math.ceil(((_b = data === null || data === void 0 ? void 0 : data.length) !== null && _b !== void 0 ? _b : 0) / rowsPerPage), handlePagination: handlePages })) : null] })));
+                            } }, { children: [numberRows ? ((0, jsx_runtime_1.jsx)("td", __assign({ className: "number-row".concat(contentTextAlign ? " ".concat(contentTextAlign) : "") }, { children: idx + 1 + (currentPage - 1) * rowsPerPage }), "row")) : null, columns.map(function (column) { return ((0, jsx_runtime_1.jsx)("td", __assign({ className: "".concat(column.cellClassName || "").concat(column.cellClassName && contentTextAlign ? " " : "").concat(contentTextAlign || "") }, { children: column.render
+                                        ? column.render(column.key, item)
+                                        : item[column.key] }), column.key)); })] }), rowKey ? "row-".concat(rowKey(item)) : idx)); }) }))] })), !manageData || !manageData.length ? ((0, jsx_runtime_1.jsx)("div", { children: (0, jsx_runtime_1.jsx)(Empty_1.default, {}) })) : null, (0, jsx_runtime_1.jsx)(Spinner_1.default, { loading: loading !== null && loading !== void 0 ? loading : false }), !loading && hasPagination ? ((0, jsx_runtime_1.jsx)(Pagination_1.default, { page: currentPage, totalPages: Math.ceil(((_b = data === null || data === void 0 ? void 0 : data.length) !== null && _b !== void 0 ? _b : 0) / rowsPerPage), handlePagination: handlePages })) : null] })));
 };
 exports.default = ReactLightTable;

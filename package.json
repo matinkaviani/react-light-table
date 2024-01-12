@@ -61,5 +61,8 @@
       "react-app/jest"
     ]
   },
-  "homepage": "https://github.com/matinkaviani/react-light-table#readme"
+  "homepage": "https://github.com/matinkaviani/react-light-table#readme",
+  "dependencies": {
+    "yarn": "^1.22.21"
+  }
 }

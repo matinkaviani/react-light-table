@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Empty from "./Empty";
-import Props, { SortProps } from "./Models/Props";
+import Props, { SortProps, TableColumns } from "./Models/Props";
 import Pagination from "./Pagination";
+import { Neutral, SortAsc, SortDesc } from "./SortIndicators";
 import Spinner from "./Spinner";
 import TextEllipsis from "./TextEllipsis";
 import helpers from "./helpers";
@@ -19,6 +20,8 @@ const ReactLightTable = <T,>({
     numberRows,
     rowsPerPage = 50,
     loading,
+    direction = "ltr",
+    icons = { asc: <SortAsc />, desc: <SortDesc />, neutral: <Neutral /> },
     handleRowClick,
     rowKey,
     afterSort,
@@ -42,7 +45,6 @@ const ReactLightTable = <T,>({
 
     const requestSort = (key: string, isAbsoluteValue: boolean) => {
         if (!sortable) return;
-
         const toggleSortMode = (
             currentSort: SortProps | null
         ): SortProps => {
@@ -61,16 +63,39 @@ const ReactLightTable = <T,>({
 
         const newSort = toggleSortMode(sort);
         afterSort?.(key, newSort.mode);
-        setCurrentPage(1);
+        if (currentPage !== 1)
+            setCurrentPage(1);
         setSort(newSort);
     };
-
+    const handleThClick = useCallback(
+        (column: TableColumns<T>) => {
+            sortable && column.sortable
+                ? requestSort(column.key?.toString() ?? "", column.isAbsoluteValue ?? false)
+                : undefined;
+        },
+        [sortable, requestSort]
+    );
     const getClassNamesFor = (name: string) => {
         if (!sort || !name) return "";
-        return sort.key === name ? sort.mode : "";
+        return sort.key === name ? ` ${sort.mode ?? ""}` : "";
     };
-
-    let manageData: { [key: string]: any }[] | null = data;
+    const SortIndicator = () => {
+        if (!sortable || !sort) return null;
+        let component = null;
+        switch (sort.mode) {
+            case "asc":
+                component = icons.asc
+                break;
+            case "desc":
+                component = icons.desc
+                break;
+            default:
+                component = icons.neutral
+                break;
+        }
+        return <>{component}</>;
+    }
+    let manageData: Record<string, any>[] | null = data;
 
     if (sort && !hasPagination) {
         const column = columns.find((col) => col.key === sort.key);
@@ -87,22 +112,26 @@ const ReactLightTable = <T,>({
     }
 
     if (hasPagination) {
-        if (sort) {
+        if (sort && sort.mode !== null) {
             const column = columns.find((col) => col.key === sort.key);
-            if (column && column.sortFunction)
+            if (column && column.sortFunction) {
                 manageData = column.sortFunction(data, sort.mode).slice(
                     firstPageIndex,
                     lastPageIndex
                 );
-            else
-                manageData = data
-                    ?.sort(
+            } else {
+                manageData = [...data]
+                    .sort(
                         helpers[sort.mode === "asc" ? "sortAsc" : "sortDesc"](sort.key, {
                             putNullAtBottom: true,
                             sortByAbsValue: sort.isAbsoluteValue,
                         })
                     )
                     .slice(firstPageIndex, lastPageIndex);
+            }
+        } else {
+            // If sort is null or sort.mode is null, use the original data without sorting
+            manageData = data.slice(firstPageIndex, lastPageIndex);
         }
     }
 
@@ -111,17 +140,17 @@ const ReactLightTable = <T,>({
     }, [currentPage]);
 
     return (
-        <div id="custom-table">
+        <div id="react-light-table">
             <table
                 id={id}
-                className={`react-light-table ${sortable ? "sortable-table" : ""} ${handleRowClick ? "clickable" : ""
-                    } ${className ?? ""}`}
+                className={`react-light-table-wrapper${sortable ? " sortable-table" : ""}${handleRowClick ? " clickable" : ""
+                    }${className ? ` ${className}` : ""}`}
             >
                 <thead>
                     <tr>
                         {numberRows ? (
                             <th
-                                className={`${headerTextAlign ?? ""} number-header-col`}
+                                className={`number-header-col${headerTextAlign ? ` ${headerTextAlign}` : ""}`}
                             >
                                 Row
                             </th>
@@ -134,22 +163,19 @@ const ReactLightTable = <T,>({
                             return (
                                 <th
                                     key={idx}
-                                    onClick={() =>
-                                        sortable && column.sortable
-                                            ? requestSort(column.key! as string, column.isAbsoluteValue!)
-                                            : undefined
-                                    }
-                                    className={`${headerTextAlign} ${getClassNamesFor(
-                                        column.key as string
-                                    )} ${column.headClassName ?? ""}`}
+                                    onClick={() => handleThClick(column)}
+                                    className={`${headerTextAlign ? `${headerTextAlign}` : ""}${sortable ? getClassNamesFor(column.key as string) : ""}${column.headClassName ? ` ${column.headClassName}` : ""}`}
                                     title={typeOfTitle}
                                 >
-                                    <span className="sortable-header">
+                                    <span className={`${sortable && column.sortable ? "sortable-header" : ""}`}>
                                         {column.isHeadNowrap ? (
-                                            <TextEllipsis children={typeOfTitle} />
+                                            <TextEllipsis className={`${headerTextAlign}`} dir={direction} children={typeOfTitle} />
                                         ) : (
                                             typeOfTitle
                                         )}
+                                        {column.sortable && column.key === sort?.key ? (
+                                            <SortIndicator />
+                                        ) : null}
                                     </span>
                                 </th>
                             );
@@ -168,7 +194,7 @@ const ReactLightTable = <T,>({
                                 {numberRows ? (
                                     <td
                                         key="row"
-                                        className={`${contentTextAlign ?? ""} number-row`}
+                                        className={`number-row${contentTextAlign ? ` ${contentTextAlign}` : ""}`}
                                     >
                                         {idx + 1 + (currentPage - 1) * rowsPerPage}
                                     </td>
@@ -176,8 +202,7 @@ const ReactLightTable = <T,>({
                                 {columns.map((column) => (
                                     <td
                                         key={column.key as string}
-                                        className={`${column.cellClassName ?? ""} ${contentTextAlign ?? ""
-                                            }`}
+                                        className={`${column.cellClassName || ""}${column.cellClassName && contentTextAlign ? " " : ""}${contentTextAlign || ""}`}
                                     >
                                         {column.render
                                             ? column.render(column.key! as string, item)
@@ -194,9 +219,7 @@ const ReactLightTable = <T,>({
                     <Empty />
                 </div>
             ) : null}
-            <div className="spinner-loader">
-                <Spinner loading={loading ?? false} />
-            </div>
+            <Spinner loading={loading ?? false} />
             {!loading && hasPagination ? (
                 <Pagination
                     page={currentPage}
