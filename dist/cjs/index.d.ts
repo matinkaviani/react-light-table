@@ -1,1 +1,1 @@
-export * from './components';
+export { default as ReactLightTable } from './components/ReactLightTable';
