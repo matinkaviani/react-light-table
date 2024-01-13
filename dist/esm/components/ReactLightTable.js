@@ -44,7 +44,6 @@ var ReactLightTable = function (_a) {
         if (!sortable)
             return;
         var toggleSortMode = function (currentSort) {
-            console.log(currentSort);
             if (!currentSort || key !== currentSort.key) {
                 return { key: key, mode: "asc", isAbsoluteValue: isAbsoluteValue };
             }
@@ -69,7 +68,6 @@ var ReactLightTable = function (_a) {
             ? requestSort((_b = (_a = column.key) === null || _a === void 0 ? void 0 : _a.toString()) !== null && _b !== void 0 ? _b : "", (_c = column.isAbsoluteValue) !== null && _c !== void 0 ? _c : false)
             : undefined;
     }, [sortable, requestSort]);
-    console.log("GERERE");
     var getClassNamesFor = function (name) {
         var _a;
         if (!sort || !name)

@@ -1,0 +1,5 @@
+# .npmignore
+src/
+tests/
+node_modules/
+*.test.ts
