@@ -7,7 +7,7 @@ import Spinner from "./Spinner";
 import TextEllipsis from "./TextEllipsis";
 import helpers from "./helpers";
 
-const ReactLightTable = <T,>({
+export const ReactLightTable = <T,>({
     id,
     columns,
     data,
@@ -231,4 +231,3 @@ const ReactLightTable = <T,>({
     );
 };
 
-export default ReactLightTable;
