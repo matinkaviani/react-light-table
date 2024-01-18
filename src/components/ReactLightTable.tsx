@@ -15,7 +15,7 @@ export const ReactLightTable = <T,>({
     headerTextAlign = "center",
     contentTextAlign,
     className,
-    hasPagination,
+    hasPagination = false,
     initSort,
     numberRows,
     rowsPerPage = 50,
