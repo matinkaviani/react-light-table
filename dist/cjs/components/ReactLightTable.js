@@ -23,6 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ReactLightTable = void 0;
 var jsx_runtime_1 = require("react/jsx-runtime");
 var react_1 = require("react");
 var Empty_1 = __importDefault(require("./Empty"));
@@ -33,15 +34,15 @@ var TextEllipsis_1 = __importDefault(require("./TextEllipsis"));
 var helpers_1 = __importDefault(require("./helpers"));
 var ReactLightTable = function (_a) {
     var _b;
-    var id = _a.id, columns = _a.columns, data = _a.data, sortable = _a.sortable, _c = _a.headerTextAlign, headerTextAlign = _c === void 0 ? "center" : _c, contentTextAlign = _a.contentTextAlign, className = _a.className, hasPagination = _a.hasPagination, initSort = _a.initSort, numberRows = _a.numberRows, _d = _a.rowsPerPage, rowsPerPage = _d === void 0 ? 50 : _d, loading = _a.loading, _e = _a.direction, direction = _e === void 0 ? "ltr" : _e, _f = _a.icons, icons = _f === void 0 ? { asc: (0, jsx_runtime_1.jsx)(SortIndicators_1.SortAsc, {}), desc: (0, jsx_runtime_1.jsx)(SortIndicators_1.SortDesc, {}), neutral: (0, jsx_runtime_1.jsx)(SortIndicators_1.Neutral, {}) } : _f, handleRowClick = _a.handleRowClick, rowKey = _a.rowKey, afterSort = _a.afterSort, onCurrentDataChange = _a.onCurrentDataChange;
-    var _g = (0, react_1.useState)(initSort
+    var id = _a.id, columns = _a.columns, data = _a.data, sortable = _a.sortable, _c = _a.headerTextAlign, headerTextAlign = _c === void 0 ? "center" : _c, contentTextAlign = _a.contentTextAlign, className = _a.className, _d = _a.hasPagination, hasPagination = _d === void 0 ? false : _d, initSort = _a.initSort, numberRows = _a.numberRows, _e = _a.rowsPerPage, rowsPerPage = _e === void 0 ? 50 : _e, loading = _a.loading, _f = _a.direction, direction = _f === void 0 ? "ltr" : _f, _g = _a.icons, icons = _g === void 0 ? { asc: (0, jsx_runtime_1.jsx)(SortIndicators_1.SortAsc, {}), desc: (0, jsx_runtime_1.jsx)(SortIndicators_1.SortDesc, {}), neutral: (0, jsx_runtime_1.jsx)(SortIndicators_1.Neutral, {}) } : _g, handleRowClick = _a.handleRowClick, rowKey = _a.rowKey, afterSort = _a.afterSort, onCurrentDataChange = _a.onCurrentDataChange;
+    var _h = (0, react_1.useState)(initSort
         ? {
             key: initSort.key,
             mode: initSort.mode,
             isAbsoluteValue: initSort.isAbsoluteValue,
         }
-        : null), sort = _g[0], setSort = _g[1];
-    var _h = (0, react_1.useState)(1), currentPage = _h[0], setCurrentPage = _h[1];
+        : null), sort = _h[0], setSort = _h[1];
+    var _j = (0, react_1.useState)(1), currentPage = _j[0], setCurrentPage = _j[1];
     var firstPageIndex = (currentPage - 1) * rowsPerPage;
     var lastPageIndex = firstPageIndex + rowsPerPage;
     var handlePages = function (updatedPage) { return setCurrentPage(updatedPage); };
@@ -142,4 +143,4 @@ var ReactLightTable = function (_a) {
                                         ? column.render(column.key, item)
                                         : item[column.key] }), column.key)); })] }), rowKey ? "row-".concat(rowKey(item)) : idx)); }) }))] })), !manageData || !manageData.length ? ((0, jsx_runtime_1.jsx)("div", { children: (0, jsx_runtime_1.jsx)(Empty_1.default, {}) })) : null, (0, jsx_runtime_1.jsx)(Spinner_1.default, { loading: loading !== null && loading !== void 0 ? loading : false }), !loading && hasPagination ? ((0, jsx_runtime_1.jsx)(Pagination_1.default, { page: currentPage, totalPages: Math.ceil(((_b = data === null || data === void 0 ? void 0 : data.length) !== null && _b !== void 0 ? _b : 0) / rowsPerPage), handlePagination: handlePages })) : null] })));
 };
-exports.default = ReactLightTable;
+exports.ReactLightTable = ReactLightTable;

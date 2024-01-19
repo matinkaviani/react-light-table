@@ -26,17 +26,17 @@ import { Neutral, SortAsc, SortDesc } from "./SortIndicators";
 import Spinner from "./Spinner";
 import TextEllipsis from "./TextEllipsis";
 import helpers from "./helpers";
-var ReactLightTable = function (_a) {
+export var ReactLightTable = function (_a) {
     var _b;
-    var id = _a.id, columns = _a.columns, data = _a.data, sortable = _a.sortable, _c = _a.headerTextAlign, headerTextAlign = _c === void 0 ? "center" : _c, contentTextAlign = _a.contentTextAlign, className = _a.className, hasPagination = _a.hasPagination, initSort = _a.initSort, numberRows = _a.numberRows, _d = _a.rowsPerPage, rowsPerPage = _d === void 0 ? 50 : _d, loading = _a.loading, _e = _a.direction, direction = _e === void 0 ? "ltr" : _e, _f = _a.icons, icons = _f === void 0 ? { asc: _jsx(SortAsc, {}), desc: _jsx(SortDesc, {}), neutral: _jsx(Neutral, {}) } : _f, handleRowClick = _a.handleRowClick, rowKey = _a.rowKey, afterSort = _a.afterSort, onCurrentDataChange = _a.onCurrentDataChange;
-    var _g = useState(initSort
+    var id = _a.id, columns = _a.columns, data = _a.data, sortable = _a.sortable, _c = _a.headerTextAlign, headerTextAlign = _c === void 0 ? "center" : _c, contentTextAlign = _a.contentTextAlign, className = _a.className, _d = _a.hasPagination, hasPagination = _d === void 0 ? false : _d, initSort = _a.initSort, numberRows = _a.numberRows, _e = _a.rowsPerPage, rowsPerPage = _e === void 0 ? 50 : _e, loading = _a.loading, _f = _a.direction, direction = _f === void 0 ? "ltr" : _f, _g = _a.icons, icons = _g === void 0 ? { asc: _jsx(SortAsc, {}), desc: _jsx(SortDesc, {}), neutral: _jsx(Neutral, {}) } : _g, handleRowClick = _a.handleRowClick, rowKey = _a.rowKey, afterSort = _a.afterSort, onCurrentDataChange = _a.onCurrentDataChange;
+    var _h = useState(initSort
         ? {
             key: initSort.key,
             mode: initSort.mode,
             isAbsoluteValue: initSort.isAbsoluteValue,
         }
-        : null), sort = _g[0], setSort = _g[1];
-    var _h = useState(1), currentPage = _h[0], setCurrentPage = _h[1];
+        : null), sort = _h[0], setSort = _h[1];
+    var _j = useState(1), currentPage = _j[0], setCurrentPage = _j[1];
     var firstPageIndex = (currentPage - 1) * rowsPerPage;
     var lastPageIndex = firstPageIndex + rowsPerPage;
     var handlePages = function (updatedPage) { return setCurrentPage(updatedPage); };
@@ -137,4 +137,3 @@ var ReactLightTable = function (_a) {
                                         ? column.render(column.key, item)
                                         : item[column.key] }), column.key)); })] }), rowKey ? "row-".concat(rowKey(item)) : idx)); }) }))] })), !manageData || !manageData.length ? (_jsx("div", { children: _jsx(Empty, {}) })) : null, _jsx(Spinner, { loading: loading !== null && loading !== void 0 ? loading : false }), !loading && hasPagination ? (_jsx(Pagination, { page: currentPage, totalPages: Math.ceil(((_b = data === null || data === void 0 ? void 0 : data.length) !== null && _b !== void 0 ? _b : 0) / rowsPerPage), handlePagination: handlePages })) : null] })));
 };
-export default ReactLightTable;
