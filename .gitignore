@@ -37,3 +37,6 @@ next-env.d.ts
 
 #demo project
 /demo
+
+#dist folder
+/dist
