@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# React Light Table
 
-## Getting Started
+## Overview
 
-First, run the development server:
+`React Light Table` is a customizable React component designed for creating tables with sorting, pagination, and other features. It offers a clean and straightforward interface for rendering data in a tabular format, providing flexibility and ease of use.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Features
+
+- **Sorting:** Enable sorting on columns by clicking the column headers. The table supports ascending, descending, and neutral sort indicators.
+- **Pagination:** Implement pagination to navigate through large datasets with ease. The component includes a pagination control at the bottom of the table.
+- **Clickable Rows:** Customize the table to handle row clicks, providing interactive functionality.
+- **Loading Spinner:** Display a loading spinner while data is being fetched or processed.
+- **Customizable Styles:** Tailor the appearance of the table with customizable styles for headers, cells, and more.
+
+## Installation
+
+To use `React Light Table` in your React project, follow these steps:
+
+1. Install the package using your package manager of choice:
+
+   ```
+   npm install react-light-table
+   ```
+   or
+   ```
+   yarn add react-light-table
+   ```
+
+2. Import the component in your React file:
+
+```
+import { ReactLightTable } from 'react-light-table';
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Import the css file:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+import "react-light-table/style.css";
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Usage
 
-## Learn More
+The `React Light Table` component accepts a variety of props to customize its behavior. Here's a basic example of how to use it:
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+import { ReactLightTable } from 'react-light-table';
+import "react-light-table/style.css";
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+const MyTable = () => {
+  // Define your data, columns, and other configuration
+  const columns = [
+    { key: 'name', title: 'Name', sortable: true },
+    { key: 'age', title: 'Age', sortable: true },
+    // Add more columns as needed
+  ];
 
-## Deploy on Vercel
+  const data = [
+    { name: 'John Doe', age: 30 },
+    { name: 'Jane Doe', age: 25 },
+    // Add more data items as needed
+  ];
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+  return (
+    <ReactLightTable
+      id="my-table"
+      columns={columns}
+      data={data}
+      sortable={true}
+      hasPagination={true}
+    />
+  );
+};
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+export default MyTable;
+```
+
+## Props
+
+- **id:**  Unique identifier for the table.
+- **columns:** Array of column configurations.
+- **data** Array of data items to be displayed in the table.
+- **sortable**  Enable or disable column sorting.
+- **hasPagination** Enable or disable pagination.
+- **... (and more)**
+
+Refer to the [Props documentation](./Props.md) for a detailed list of available props.
+
+## License
+
+This project is licensed under the MIT License.
+
+## Contributing
+
+We welcome contributions! Feel free to open issues, submit pull requests, or provide feedback
