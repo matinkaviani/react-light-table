@@ -1,6 +1,6 @@
 "use client"
-import "react-light-table/dist/style.css";
-import ReactLightTable from "../../../dist/esm/components/ReactLightTable";
+import { ReactLightTable } from "react-light-table";
+import "react-light-table/style.css";
 export default function Home() {
   const columns = [
     {
