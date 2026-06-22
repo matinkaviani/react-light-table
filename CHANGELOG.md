@@ -1,5 +1,39 @@
 # Changelog
 
+## 3.1.0
+
+### Fixed
+
+- Virtual scroll: disabled row entrance animations in virtual mode (absolute row index caused multi-second render delays when scrolling deep into large lists).
+- Virtual scroll: batched scroll updates via `requestAnimationFrame` and only re-render when the visible window changes.
+- Sticky columns: first-column header now pins correctly during horizontal scroll (per-cell sticky instead of whole `thead`).
+- TypeScript: `filterOptions` and `editOptions` accept `readonly` arrays (fixes `as const` column definitions).
+
+## 3.0.0
+
+### Added
+
+- **Multi-sort** — `multiSort` prop; Shift+click headers for secondary sorts. `SortState` = `SortProps | SortProps[] | null`.
+- **Per-column filters** — `showColumnFilters`, `columnFilters`, `onColumnFiltersChange`, `manualColumnFiltering`. Column-level `filter`, `filterOptions`, `filterPlaceholder`.
+- **Table variants** — `variant="striped" | "bordered"`.
+- **Virtual scrolling** — `virtualized`, `virtualRowHeight`, `scroll.y` for large datasets.
+- **Tree data** — `treeData`, `childrenColumn` with expand/collapse and depth indentation.
+- **Inline editing** — column `editable`, `editType`, `editOptions`, and `onCellChange`.
+- **Bulk actions** — `bulkActionsContent` bar when rows are selected; `exportSelected` for CSV export of selection only.
+- **Column resize** — `resizable`, `columnWidths`, `onColumnWidthsChange`.
+- **Column reorder** — `reorderable`, `columnOrder`, `onColumnOrderChange` (drag headers).
+- **Sticky columns** — `stickyColumn="first" | "last"` with horizontal scroll.
+- **Headless hook** — `useReactLightTable(props)` exports state and handlers for custom UIs.
+- **Utilities** — `sortUtils` (`toggleSort`, `getPrimarySort`, `normalizeSortState`, `isColumnSorted`), `filterColumnRows`, `flattenTreeRows`, `getOrderedColumns`, `useVirtualWindow`.
+- Expanded playground with 20+ demo scenarios.
+- 57 unit tests (up from 41).
+
+### Changed
+
+- `onSortChange` now receives `SortState` (single sort or array) instead of only `SortProps | null`.
+- Pagination redesigned with accessible button controls inside the table surface.
+- Dark mode CSS scoped correctly on the table root element.
+
 ## 2.3.0
 
 ### Added

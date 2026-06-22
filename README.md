@@ -1,26 +1,34 @@
 # React Light Table
 
-A lightweight, customizable React table component with sorting, pagination, filtering, selection, and accessible defaults.
+A lightweight, customizable React data table with sorting, pagination, filtering, selection, virtualization, and accessible defaults. No heavy dependencies — just React.
 
 ## Features
 
-- Column sorting (asc → desc → neutral)
-- Pagination with smart page controls
-- Global search / filtering (client or manual/server mode)
-- Row selection (single or multiple)
-- Expandable rows, column visibility, CSV export
-- Clickable rows
-- Loading and empty states (customizable)
-- Controlled or uncontrolled sort, page, filter, and selection state
-- Light/dark theme and compact density
-- RTL/LTR header support
-- Custom column rendering and sort functions
-- React 18 and 19 support
+- **Sorting** — single or multi-column (Shift+click)
+- **Pagination** — client-side or manual/server mode
+- **Filtering** — global search and per-column filters
+- **Selection** — single/multiple rows with bulk action bar
+- **Expandable rows** and **tree/hierarchical data**
+- **Column controls** — visibility toggle, resize, drag reorder
+- **Virtual scrolling** for large datasets
+- **Inline cell editing**
+- **CSV export** (all rows or selected only)
+- **Theming** — light/dark, compact density, striped/bordered variants
+- **Customization** — design tokens, class name slots, custom renderers
+- **Headless hook** — `useReactLightTable` for custom UIs
+- **Accessibility** — `aria-sort`, keyboard sort, pagination labels
+- **React 18 and 19** support
 
 ## Installation
 
 ```bash
 npm install react-light-table
+```
+
+Import the stylesheet once in your app:
+
+```tsx
+import "react-light-table/style.css";
 ```
 
 ## Quick start
@@ -53,7 +61,40 @@ export function MyTable() {
 }
 ```
 
+## Sorting
+
+Single-column sort cycles **asc → desc → none** on header click.
+
+```tsx
+<ReactLightTable columns={columns} data={data} sortable />
+```
+
+Multi-column sort — hold **Shift** while clicking headers:
+
+```tsx
+<ReactLightTable columns={columns} data={data} sortable multiSort />
+```
+
+Controlled sort state accepts a single sort or an array:
+
+```tsx
+import { ReactLightTable, type SortState } from "react-light-table";
+
+const [sort, setSort] = useState<SortState>({ key: "name", mode: "asc" });
+
+<ReactLightTable
+  columns={columns}
+  data={data}
+  sortable
+  multiSort
+  sort={sort}
+  onSortChange={setSort}
+/>
+```
+
 ## Filtering
+
+### Global search
 
 ```tsx
 <ReactLightTable
@@ -64,9 +105,36 @@ export function MyTable() {
 />
 ```
 
-For server-driven filtering, use controlled `filterValue` / `onFilterChange` with `manualFiltering`.
+### Per-column filters
 
-## Row selection
+Define `filter` on columns (`"text"` or `"select"`) and enable the filter row:
+
+```tsx
+const columns = [
+  { key: "name", title: "Name", filter: "text" },
+  {
+    key: "department",
+    title: "Department",
+    filter: "select",
+    filterOptions: [
+      { label: "Engineering", value: "Engineering" },
+      { label: "Design", value: "Design" },
+    ],
+  },
+];
+
+<ReactLightTable
+  columns={columns}
+  data={data}
+  showColumnFilters
+  columnFilters={columnFilters}
+  onColumnFiltersChange={setColumnFilters}
+/>
+```
+
+For server-driven filtering, use controlled `filterValue` / `onFilterChange` with `manualFiltering`, or `manualColumnFiltering` for column filters.
+
+## Row selection & bulk actions
 
 ```tsx
 <ReactLightTable
@@ -75,7 +143,12 @@ For server-driven filtering, use controlled `filterValue` / `onFilterChange` wit
   selectable="multiple"
   rowKey={(row) => row.id}
   selectedRowKeys={selected}
-  onSelectionChange={setSelected}
+  onSelectionChange={(keys, rows) => setSelected(keys)}
+  bulkActionsContent={
+    <button type="button" onClick={handleDelete}>Delete selected</button>
+  }
+  showExport
+  exportSelected
 />
 ```
 
@@ -103,15 +176,33 @@ For server-driven filtering, use controlled `filterValue` / `onFilterChange` wit
 />
 ```
 
-## CSV export
+## Virtual scrolling
+
+For large lists, enable virtualization. Row entrance animations are automatically disabled in virtual mode.
 
 ```tsx
-import { exportToCsv } from "react-light-table";
-
-exportToCsv({ data, columns, filename: "export.csv" });
+<ReactLightTable
+  columns={columns}
+  data={largeDataset}
+  virtualized
+  scroll={{ y: 400 }}
+  virtualRowHeight={44}
+/>
 ```
 
-Or enable the built-in toolbar button with `showExport`.
+## Tree data
+
+```tsx
+<ReactLightTable
+  columns={columns}
+  data={treeData}
+  treeData
+  childrenColumn="children"
+  rowKey={(row) => row.id}
+  expandedRowKeys={expanded}
+  onExpandedChange={setExpanded}
+/>
+```
 
 ## Expandable rows
 
@@ -125,6 +216,74 @@ Or enable the built-in toolbar button with `showExport`.
   onExpandedChange={setExpanded}
   renderExpandedRow={(row) => <div>{row.details}</div>}
 />
+```
+
+## Inline editing
+
+Enable editing per column and handle changes:
+
+```tsx
+const columns = [
+  { key: "name", title: "Name", editable: true },
+  { key: "age", title: "Age", editable: true, editType: "number" },
+  {
+    key: "status",
+    title: "Status",
+    editable: true,
+    editType: "select",
+    editOptions: [
+      { label: "Active", value: "active" },
+      { label: "Inactive", value: "inactive" },
+    ],
+  },
+];
+
+<ReactLightTable
+  columns={columns}
+  data={data}
+  rowKey={(row) => row.id}
+  onCellChange={(row, key, value) => updateRow(row, key, value)}
+/>
+```
+
+## Column resize, reorder & sticky columns
+
+```tsx
+<ReactLightTable
+  columns={columns}
+  data={data}
+  resizable
+  reorderable
+  columnWidths={widths}
+  onColumnWidthsChange={setWidths}
+  columnOrder={order}
+  onColumnOrderChange={setOrder}
+  scroll={{ x: 800 }}
+  stickyColumn="first"
+/>
+```
+
+## Table variants
+
+```tsx
+<ReactLightTable columns={columns} data={data} variant="striped" />
+<ReactLightTable columns={columns} data={data} variant="bordered" />
+```
+
+## CSV export
+
+Built-in toolbar button:
+
+```tsx
+<ReactLightTable columns={columns} data={data} showExport exportFilename="export.csv" />
+```
+
+Or use the utility directly:
+
+```tsx
+import { exportToCsv } from "react-light-table";
+
+exportToCsv({ data, columns, filename: "export.csv", columnVisibility });
 ```
 
 ## Customization
@@ -154,14 +313,51 @@ Or enable the built-in toolbar button with `showExport`.
   data={data}
   classNames={{
     root: "my-table",
+    toolbar: "my-table-toolbar",
+    surface: "my-table-surface",
+    scrollContainer: "my-table-scroll",
+    table: "my-table-el",
     row: "my-table-row",
     cell: "my-table-cell",
     pagination: "my-table-pagination",
+    bulkActions: "my-table-bulk",
   }}
 />
 ```
 
-Set `disableAnimations` to opt out of motion. You can also override CSS variables directly on the root element — see `defaultTableAppearance` for the full token list.
+Set `disableAnimations` to opt out of motion. Override CSS variables on the root — see `defaultTableAppearance` for the full token list.
+
+### Theme & density
+
+```tsx
+<ReactLightTable columns={columns} data={data} theme="dark" size="compact" />
+```
+
+## Headless API
+
+Use `useReactLightTable` to drive your own UI while reusing all table state logic:
+
+```tsx
+import { useReactLightTable } from "react-light-table";
+
+function CustomTable(props) {
+  const table = useReactLightTable(props);
+  const { visibleRows, requestSort, setFilterValue } = table;
+  // render your own markup
+}
+```
+
+## Exported utilities
+
+| Export | Description |
+|--------|-------------|
+| `ReactLightTable` | Main table component |
+| `useReactLightTable` | Headless state/handler hook |
+| `exportToCsv` | Client-side CSV download |
+| `processTableData` | Filter → sort → paginate pipeline |
+| `flattenTreeRows` | Flatten hierarchical data |
+| `toggleSort` / `getPrimarySort` / `normalizeSortState` | Sort state helpers |
+| `applyAppearance` / `defaultTableAppearance` | Theme token helpers |
 
 ## Development
 
@@ -169,11 +365,25 @@ Set `disableAnimations` to opt out of motion. You can also override CSS variable
 npm install
 npm run build
 npm test
+npm run typecheck
 npm run lint
-npm run dev:playground
+npm run dev:playground   # http://localhost:5173
 ```
 
-See [Props.md](./Props.md) and [CHANGELOG.md](./CHANGELOG.md) for the full API and release notes.
+The playground includes scenarios for pagination, filtering, selection, server mode, virtualization, tree data, editing, bulk actions, and more.
+
+## Upgrading to v3
+
+- `onSortChange` now receives `SortState` (`SortProps | SortProps[] | null`) instead of only a single `SortProps`. Use `getPrimarySort(sort)` if you only need the first active sort.
+- Import the stylesheet: `import "react-light-table/style.css"`.
+- Virtual mode automatically disables row entrance animations — no action needed.
+
+See [CHANGELOG.md](./CHANGELOG.md) for the full release history.
+
+## Documentation
+
+- [Props.md](./Props.md) — full prop reference
+- [CHANGELOG.md](./CHANGELOG.md) — release history
 
 ## License
 

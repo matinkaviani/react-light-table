@@ -1,7 +1,7 @@
 {
   "name": "react-light-table",
   "version": "3.1.0",
-  "description": "a light weight react table with sorting and pagination features",
+  "description": "A lightweight React data table with sorting, pagination, filtering, selection, virtualization, and theming",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
@@ -35,14 +35,21 @@
     "react",
     "react-component",
     "table",
+    "data-table",
     "sortable",
     "pagination",
-    "data-table",
+    "filtering",
+    "virtual-scroll",
+    "virtualization",
+    "selection",
+    "editable",
+    "tree-table",
     "custom-table",
     "react-table",
+    "headless",
     "ui",
     "component",
-    "javascript"
+    "typescript"
   ],
   "author": "Matin Kaviani <matinkaviiani@gmail.com> (https://matinkaviani.net/)",
   "bugs": {
