@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.1.2
+
+### Fixed
+
+- Dev dependencies: resolved `esbuild` (GHSA-g7r4-m6w7-qqqr) and `brace-expansion` advisories via lockfile updates and an `esbuild` override.
+
 ## 3.1.0
 
 ### Fixed
