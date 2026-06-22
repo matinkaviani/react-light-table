@@ -1,6 +1,6 @@
 {
   "name": "react-light-table",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "A lightweight React data table with sorting, pagination, filtering, selection, virtualization, and theming",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
