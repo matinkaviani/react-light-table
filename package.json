@@ -1,12 +1,13 @@
 {
   "name": "react-light-table",
-  "version": "1.1.1",
+    "version": "3.0.0",
   "description": "a light weight react table with sorting and pagination features",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/esm/index.d.ts",
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js"
     },
@@ -14,12 +15,17 @@
   },
   "license": "MIT",
   "scripts": {
-    "build": "yarn sass && yarn build:esm && yarn build:cjs && yarn copy-files rm -rf ./dist",
-    "build:esm": "tsc",
-    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-    "sass": "sass --no-source-map --style=compressed src/components",
+    "build": "npm run clean && npm run build:js && npm run build:css",
+    "build:js": "tsup && mv dist/esm/index.d.mts dist/esm/index.d.ts",
+    "build:css": "sass --no-source-map --style=compressed src/components/style.scss dist/style.css",
     "clean": "rm -rf ./dist",
-    "copy-files": "copyfiles -f \"./src/**/*.css\" \"dist/esm/components\""
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "dev:playground": "npm install --prefix playground && npm run dev --prefix playground",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -43,36 +49,33 @@
     "url": "https://github.com/matinkaviani/react-light-table/issues"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.2.0 || ^19.0.0"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^13.0.0",
-    "@types/jest": "^28.1.5",
-    "@types/node": "^18.0.4",
-    "@types/react": "^18.0.18",
-    "@types/react-dom": "18.0.6",
-    "copyfiles": "^2.4.1",
-    "css-loader": "^6.9.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "sass": "^1.53.0",
-    "style-loader": "^3.3.4",
-    "ts-loader": "^9.5.1",
-    "typescript": "^4.4.2"
+    "@eslint/js": "^9.22.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^22.13.10",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.22.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^16.0.0",
+    "jsdom": "^26.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "sass": "^1.85.1",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.26.1",
+    "vitest": "^3.0.9"
   },
   "files": [
     "/dist"
   ],
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "homepage": "https://github.com/matinkaviani/react-light-table#readme",
-  "dependencies": {
-    "yarn": "^1.22.21"
-  }
+  "homepage": "https://github.com/matinkaviani/react-light-table#readme"
 }

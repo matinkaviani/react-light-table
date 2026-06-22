@@ -1,88 +1,124 @@
 # TableProps Interface
 
-The `TableProps` interface defines the properties that can be passed to a React table component.
+The `TableProps` interface defines the properties that can be passed to `ReactLightTable`.
 
-## Properties
+## Core
 
-- `id` (optional): A string identifier for the table.
+- `id` (optional): Table element id.
+- `columns`: Array of `TableColumns`.
+- `data`: Array of row records typed as `T[]`.
+- `sortable` (optional): Enable column sorting.
+- `multiSort` (optional): Enable multi-column sort (Shift+click headers).
+- `headerTextAlign` / `contentTextAlign` (optional): `"right" | "center" | "left"`.
+- `className` (optional): Extra wrapper classes.
+- `loading` (optional): Loading state.
+- `emptyContent` / `loadingContent` (optional): Custom empty/loading UI.
+- `rowKey` (optional): Stable row key generator. Required when using `selectable`, `expandable`, or `treeData`.
+- `handleRowClick` (optional): Row click handler.
+- `onCurrentDataChange` (optional): Called when visible rows change.
 
-- `columns`: An array of `TableColumns` that describe the structure of the table.
+## Sorting
 
-- `data`: An array of records represented as key-value pairs.
+- `sort` / `onSortChange`: Controlled sort state (`SortProps`, `SortProps[]`, or `null`).
+- `initSort` (deprecated): Initial uncontrolled sort.
+- `afterSort` (optional): Callback after sort action.
+- `manualSorting` (optional): Skip client-side sorting.
 
-- `sortable` (optional): A boolean indicating whether the table columns are sortable.
+## Pagination
 
-- `headerTextAlign` (optional): The text alignment for the table header. Possible values: "right", "center", "left".
+- `hasPagination` / `rowsPerPage`: Pagination config.
+- `page` / `onPageChange`: Controlled page state.
+- `manualPagination` (optional): Skip client-side slicing.
+- `totalRows` (optional): Total row count for manual pagination.
 
-- `contentTextAlign` (optional): The text alignment for the table content. Possible values: "right", "center", "left".
+## Filtering
 
-- `className` (optional): Additional CSS class names for styling the table.
+- `filterValue` / `onFilterChange`: Controlled global filter query.
+- `filterKeys` (optional): Keys to search (defaults to all column keys).
+- `filterFunction` (optional): Custom matcher `(row, query) => boolean`.
+- `manualFiltering` (optional): Skip client-side filtering.
+- `showFilter` (optional): Render built-in search input.
+- `filterPlaceholder` (optional): Search placeholder.
+- `columnFilters` / `onColumnFiltersChange`: Per-column filter values.
+- `showColumnFilters` (optional): Render filter row under headers.
+- `manualColumnFiltering` (optional): Skip client-side column filtering.
 
-- `initSort` (optional): Initial sorting configuration represented by a `SortProps` object.
+## Selection
 
-- `numberRows` (optional): A boolean indicating whether to display row numbers.
+- `selectable` (optional): `true`, `"single"`, or `"multiple"`.
+- `selectedRowKeys` / `onSelectionChange`: Controlled selection.
+- `disableRowSelection` (optional): Per-row disable predicate.
+- `bulkActionsContent` (optional): Toolbar shown when rows are selected.
+- `exportSelected` (optional): Export only selected rows when selection exists.
 
-- `direction` (optional): The text direction for the table. Possible values: "rtl" (right-to-left), "ltr" (left-to-right).
+## Expandable rows
 
-- `icons` (optional): An object containing React nodes for sorting icons (`asc`, `desc`, `neutral`).
+- `expandable` (optional): Enable expand column.
+- `expandedRowKeys` / `onExpandedChange`: Controlled expanded state.
+- `renderExpandedRow` (optional): Detail panel renderer.
 
-- `handleRowClick` (optional): A function to handle row clicks. Receives the clicked item and the associated event.
+## Tree data
 
-- `loading` (optional): A boolean indicating whether the table is in a loading state.
+- `treeData` (optional): Enable hierarchical rows.
+- `childrenColumn` (optional): Key containing child rows array.
 
-- `rowKey` (optional): A function to generate unique keys for each row based on the item.
+## Column visibility / order / sizing
 
-- `afterSort` (optional): A callback function invoked after a column is sorted. Receives the key and sort mode.
+- `columnVisibility` / `onColumnVisibilityChange`: Controlled visibility map.
+- `showColumnToggle` (optional): Built-in column picker.
+- `columnOrder` / `onColumnOrderChange`: Column order by key.
+- `columnWidths` / `onColumnWidthsChange`: Column width map (px).
+- `resizable` (optional): Enable column resize handles.
+- `reorderable` (optional): Enable drag-and-drop column reordering.
 
-- `onCurrentDataChange` (optional): A callback function invoked when the current data in the table changes.
+## Layout / scrolling / virtualization
+
+- `variant` (optional): `"default" | "striped" | "bordered"`.
+- `scroll` (optional): `{ x?, y? }` horizontal/vertical scroll container.
+- `stickyColumn` (optional): `"first" | "last"` sticky column.
+- `virtualized` (optional): Virtual row rendering for large lists.
+- `virtualRowHeight` (optional): Row height for virtualization (default `44`).
+
+## Editing
+
+- `onCellChange` (optional): `(row, key, value) => void` when inline editing is enabled on columns.
+
+## Toolbar / export / theme
+
+- `showExport` (optional): Built-in CSV export button.
+- `exportFilename` (optional): Download filename.
+- `toolbarContent` (optional): Custom toolbar slot.
+- `theme` (optional): `"light" | "dark"`.
+- `size` (optional): `"default" | "compact"`.
+- `appearance` (optional): Design token overrides.
+- `classNames` (optional): Class slots including `scrollContainer`, `filterRow`, `filterCell`, `bulkActions`.
+- `disableAnimations` (optional): Disable motion/entrance animations.
+
+## Other
+
+- `numberRows` (optional): Show row numbers.
+- `direction` (optional): `"rtl" | "ltr"`.
+- `icons` (optional): Custom sort icons.
+
+## Headless hook
+
+Use `useReactLightTable(props)` to access table state and handlers without rendering the default UI.
 
 ## Types
 
-### SortMode
-
-A string literal type representing sorting modes: "asc", "desc", or `null`.
-
-### SortProps
-
-An object representing sorting configuration with the following properties:
-
-- `key`: The key of the column to be sorted.
-
-- `mode`: The sorting mode ("asc", "desc", or `null`).
-
-- `isAbsoluteValue` (optional): A boolean indicating whether to sort by absolute values.
-
 ### TableColumns<T>
 
-An interface defining the structure of a table column with the following properties:
+- `key`, `title`, `sortable`, `render`, `sortFunction`, `filter`, `filterOptions`, `editable`, `editType`, `editOptions`, `width`, `summary`, etc.
 
-- `key` (optional): The key of the column corresponding to the data property.
+### SortProps / SortState
 
-- `title`: The title of the column, either a string or a function returning a string.
+- `key`, `mode` (`"asc" | "desc" | null`), `isAbsoluteValue`.
+- `SortState` = `SortProps | SortProps[] | null`.
 
-- `isHeadNowrap` (optional): A boolean indicating whether the column header should have nowrap.
+## Utilities
 
-- `sortable` (optional): A boolean indicating whether the column is sortable.
+### exportToCsv
 
-- `isAbsoluteValue` (optional): A boolean indicating whether to use absolute values in sorting.
-
-- `headClassName` (optional): Additional CSS class for the column header.
-
-- `cellClassName` (optional): Additional CSS class for the column cells.
-
-- `render` (optional): A function to customize rendering of the column content.
-
-- `sortFunction` (optional): A function to define custom sorting logic for the column.
-
-### PaginatedProps
-
-A union type representing pagination configuration with the following options:
-
-1. `{ hasPagination: true; rowsPerPage?: number; }`
-2. `{ hasPagination: false; rowsPerPage?: never; }`
-3. `{ hasPagination?: never; rowsPerPage?: never; }`
-
-The above options control whether the table has pagination and specify the number of rows per page.
-
----
-**Note:** This documentation is a reference for developers using the `TableProps` interface in React applications.
+```ts
+exportToCsv<T>({ data, columns, filename?, columnVisibility? }): void
+```

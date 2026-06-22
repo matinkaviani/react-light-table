@@ -1,11 +1,30 @@
+import type { CSSProperties, ElementType, HTMLAttributes } from "react";
 
-const TextEllipsis = ({ children, lineClamp = 1, as = "div", dir = "rtl", className, ...rest }: { children: string, lineClamp?: number, as?: keyof JSX.IntrinsicElements, dir?: "rtl" | "ltr", className?: string }) => {
-    const Wrapper = as;
+type TextEllipsisProps = {
+    children: string;
+    lineClamp?: number;
+    as?: ElementType;
+    dir?: "rtl" | "ltr";
+    className?: string;
+} & HTMLAttributes<HTMLElement>;
+
+const TextEllipsis = ({
+    children,
+    lineClamp = 1,
+    as: Component = "div",
+    dir = "rtl",
+    className,
+    ...rest
+}: TextEllipsisProps) => {
     return (
-        <Wrapper className={`multiline-ellipsis ${className ?? ""}`} style={{ WebkitLineClamp: lineClamp, direction: dir }} {...rest}>
+        <Component
+            className={`multiline-ellipsis ${className ?? ""}`}
+            style={{ WebkitLineClamp: lineClamp, direction: dir } as CSSProperties}
+            {...rest}
+        >
             {children}
-        </Wrapper>
-    )
-}
+        </Component>
+    );
+};
 
 export default TextEllipsis;

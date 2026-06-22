@@ -1,2 +1,13 @@
 export * from './ReactLightTable';
-export * from './Models/Props'
+export * from './Models/Props';
+export { useReactLightTable } from './useReactLightTable';
+export type { UseReactLightTableReturn } from './useReactLightTable';
+export { normalizeSortState, toggleSort, getPrimarySort, isColumnSorted } from './sortUtils';
+export type { SortState } from './sortUtils';
+export { processTableData } from './useTableData';
+export { flattenTreeRows } from './flattenTreeRows';
+export type { FlatTreeRow } from './flattenTreeRows';
+export { applyAppearance, defaultTableAppearance, tableCssVariables } from './applyAppearance';
+export type { TableAppearance } from './applyAppearance';
+export { exportToCsv } from '../utils/exportToCsv';
+export type { ExportToCsvOptions } from '../utils/exportToCsv';

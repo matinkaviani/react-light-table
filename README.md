@@ -1,95 +1,180 @@
 # React Light Table
 
-## Overview
-
-`React Light Table` is a customizable React component designed for creating tables with sorting, pagination, and other features. It offers a clean and straightforward interface for rendering data in a tabular format, providing flexibility and ease of use.
+A lightweight, customizable React table component with sorting, pagination, filtering, selection, and accessible defaults.
 
 ## Features
 
-- **Sorting:** Enable sorting on columns by clicking the column headers. The table supports ascending, descending, and neutral sort indicators.
-- **Pagination:** Implement pagination to navigate through large datasets with ease. The component includes a pagination control at the bottom of the table.
-- **Clickable Rows:** Customize the table to handle row clicks, providing interactive functionality.
-- **Loading Spinner:** Display a loading spinner while data is being fetched or processed.
-- **Customizable Styles:** Tailor the appearance of the table with customizable styles for headers, cells, and more.
+- Column sorting (asc → desc → neutral)
+- Pagination with smart page controls
+- Global search / filtering (client or manual/server mode)
+- Row selection (single or multiple)
+- Expandable rows, column visibility, CSV export
+- Clickable rows
+- Loading and empty states (customizable)
+- Controlled or uncontrolled sort, page, filter, and selection state
+- Light/dark theme and compact density
+- RTL/LTR header support
+- Custom column rendering and sort functions
+- React 18 and 19 support
 
 ## Installation
 
-To use `React Light Table` in your React project, follow these steps:
-
-1. Install the package using your package manager of choice:
-
-   ```
-   npm install react-light-table
-   ```
-   or
-   ```
-   yarn add react-light-table
-   ```
-
-2. Import the component in your React file:
-
-```
-import { ReactLightTable } from 'react-light-table';
+```bash
+npm install react-light-table
 ```
 
-3. Import the css file:
+## Quick start
 
-```
-import "react-light-table/style.css";
-```
-
-## Usage
-
-The `React Light Table` component accepts a variety of props to customize its behavior. Here's a basic example of how to use it:
-
-
-```
-import { ReactLightTable } from 'react-light-table';
+```tsx
+import { ReactLightTable } from "react-light-table";
 import "react-light-table/style.css";
 
-const MyTable = () => {
-  // Define your data, columns, and other configuration
-  const columns = [
-    { key: 'name', title: 'Name', sortable: true },
-    { key: 'age', title: 'Age', sortable: true },
-    // Add more columns as needed
-  ];
+const columns = [
+  { key: "name", title: "Name", sortable: true },
+  { key: "age", title: "Age", sortable: true },
+];
 
-  const data = [
-    { name: 'John Doe', age: 30 },
-    { name: 'Jane Doe', age: 25 },
-    // Add more data items as needed
-  ];
+const data = [
+  { name: "John Doe", age: 30 },
+  { name: "Jane Doe", age: 25 },
+];
 
+export function MyTable() {
   return (
     <ReactLightTable
-      id="my-table"
       columns={columns}
       data={data}
-      sortable={true}
-      hasPagination={true}
+      sortable
+      showFilter
+      hasPagination
+      rowsPerPage={10}
     />
   );
-};
-
-export default MyTable;
+}
 ```
 
-## Props
+## Filtering
 
-- **id:**  Unique identifier for the table.
-- **columns:** Array of column configurations.
-- **data** Array of data items to be displayed in the table.
-- **sortable**  Enable or disable column sorting.
-- **hasPagination** Enable or disable pagination.
-- **... (and more)**
+```tsx
+<ReactLightTable
+  columns={columns}
+  data={data}
+  showFilter
+  filterPlaceholder="Search..."
+/>
+```
 
-Refer to the [Props documentation](./Props.md) for a detailed list of available props.
+For server-driven filtering, use controlled `filterValue` / `onFilterChange` with `manualFiltering`.
+
+## Row selection
+
+```tsx
+<ReactLightTable
+  columns={columns}
+  data={data}
+  selectable="multiple"
+  rowKey={(row) => row.id}
+  selectedRowKeys={selected}
+  onSelectionChange={setSelected}
+/>
+```
+
+## Server-side / manual mode
+
+```tsx
+<ReactLightTable
+  columns={columns}
+  data={currentPageRows}
+  sortable
+  hasPagination
+  rowsPerPage={20}
+  sort={sort}
+  onSortChange={setSort}
+  page={page}
+  onPageChange={setPage}
+  filterValue={query}
+  onFilterChange={setQuery}
+  showFilter
+  manualSorting
+  manualPagination
+  manualFiltering
+  totalRows={totalCount}
+  loading={isLoading}
+/>
+```
+
+## CSV export
+
+```tsx
+import { exportToCsv } from "react-light-table";
+
+exportToCsv({ data, columns, filename: "export.csv" });
+```
+
+Or enable the built-in toolbar button with `showExport`.
+
+## Expandable rows
+
+```tsx
+<ReactLightTable
+  columns={columns}
+  data={data}
+  expandable
+  rowKey={(row) => row.id}
+  expandedRowKeys={expanded}
+  onExpandedChange={setExpanded}
+  renderExpandedRow={(row) => <div>{row.details}</div>}
+/>
+```
+
+## Customization
+
+### Design tokens (`appearance`)
+
+```tsx
+<ReactLightTable
+  columns={columns}
+  data={data}
+  appearance={{
+    accent: "#8b5cf6",
+    background: "#ffffff",
+    foreground: "#1e293b",
+    border: "#e2e8f0",
+    radius: "1rem",
+    shadow: "0 8px 24px rgba(15, 23, 42, 0.08)",
+  }}
+/>
+```
+
+### Class name slots (`classNames`)
+
+```tsx
+<ReactLightTable
+  columns={columns}
+  data={data}
+  classNames={{
+    root: "my-table",
+    row: "my-table-row",
+    cell: "my-table-cell",
+    pagination: "my-table-pagination",
+  }}
+/>
+```
+
+Set `disableAnimations` to opt out of motion. You can also override CSS variables directly on the root element — see `defaultTableAppearance` for the full token list.
+
+## Development
+
+```bash
+npm install
+npm run build
+npm test
+npm run lint
+npm run dev:playground
+```
+
+See [Props.md](./Props.md) and [CHANGELOG.md](./CHANGELOG.md) for the full API and release notes.
 
 ## License
 
-This project is licensed under the MIT License.
-
-## Contributing
-
-We welcome contributions! Feel free to open issues, submit pull requests, or provide feedback
+MIT

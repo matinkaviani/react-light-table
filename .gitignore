@@ -37,3 +37,7 @@ next-env.d.ts
 
 #dist folder
 /dist
+
+# playground
+playground/node_modules
+playground/dist
